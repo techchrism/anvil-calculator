@@ -22,22 +22,19 @@ export function VersionSelection(props: IVersionSelectionProps) {
     const initialVersion = props.versions.latest.release
 
     return (
-        <>
-            <div class="w-max">
-                <label for="version-select" class="font-semibold">Minecraft Version</label>
-                <Select {...versionSelectionOptions()}
-                        initialValue={initialVersion}
-                        onChange={(selected) => props.setSelectedVersion(selected)}
-                        class="bg-white"
-                        id="version-select"
-                />
+        <div class="w-max">
+            <label for="version-select" class="font-semibold">Minecraft Version</label>
+            <Select {...versionSelectionOptions()}
+                    initialValue={initialVersion}
+                    onChange={(selected) => props.setSelectedVersion(selected)}
+                    class="bg-white"
+                    id="version-select"
+            />
 
-                <div class="flex">
-                    <input type="checkbox" id="snapshot-checkbox" class="mr-2 self-center" onChange={(e) => setShowSnapshots(e.currentTarget.checked)}/>
-                    <label for="snapshot-checkbox">Show Snapshots</label>
-                </div>
+            <div class="flex">
+                <input type="checkbox" id="snapshot-checkbox" class="mr-2 self-center" onChange={(e) => setShowSnapshots(e.currentTarget.checked)}/>
+                <label for="snapshot-checkbox">Show Snapshots</label>
             </div>
-
-        </>
+        </div>
     )
 }
