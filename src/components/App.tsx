@@ -2,7 +2,6 @@ import type {Component} from 'solid-js';
 import {createResource, createSignal, Show} from "solid-js";
 import {EnchantmentData, EnchantmentVersions} from "../enchantmentTypes";
 
-import "@thisbeyond/solid-select/style.css";
 import {VersionSelection} from "./VersionSelection";
 
 async function loadEnchantmentData(version: string): Promise<EnchantmentData> {
