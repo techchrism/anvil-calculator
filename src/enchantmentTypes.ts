@@ -1,14 +1,16 @@
+export interface EnchantmentDataVersion {
+    id: string,
+    url: string,
+    type: 'snapshot' | 'release',
+    releaseTime: string
+}
+
 export interface EnchantmentVersions {
     latest: {
         release: string,
         snapshot: string
     },
-    listings: {
-        id: string,
-        url: string,
-        type: 'snapshot' | 'release',
-        releaseTime: string
-    }[]
+    listings: EnchantmentDataVersion[]
 }
 
 export interface EnchantmentRarity {

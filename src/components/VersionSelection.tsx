@@ -1,12 +1,12 @@
 import {createSignal, Setter} from "solid-js";
-import {EnchantmentVersions} from "../enchantmentTypes";
+import {EnchantmentDataVersion, EnchantmentVersions} from "../enchantmentTypes";
 import {createOptions, Select} from "@thisbeyond/solid-select";
 
 import "@thisbeyond/solid-select/style.css";
 
 export interface IVersionSelectionProps {
     versions: EnchantmentVersions
-    setSelectedVersion: Setter<string>
+    setSelectedVersion: Setter<EnchantmentDataVersion>
 }
 
 export function VersionSelection(props: IVersionSelectionProps) {
@@ -17,15 +17,15 @@ export function VersionSelection(props: IVersionSelectionProps) {
         if(!showSnapshots()) {
             versions = versions.filter(version => version.type === 'release')
         }
-        return createOptions(versions.map(version => version.id))
+        return createOptions(versions, {key: 'id'})
     }
-    const initialVersion = props.versions.latest.release
+    const initialVersion = () => props.versions.listings.find(version => version.id === props.versions.latest.release)
 
     return (
         <div class="w-max">
             <label for="version-select" class="font-semibold">Minecraft Version</label>
             <Select {...versionSelectionOptions()}
-                    initialValue={initialVersion}
+                    initialValue={initialVersion()}
                     onChange={(selected) => props.setSelectedVersion(selected)}
                     class="bg-white"
                     id="version-select"

@@ -1,14 +1,14 @@
 import type {Component} from 'solid-js';
 import {createResource, createSignal, For, Show} from "solid-js";
-import {EnchantmentData, EnchantmentVersions, Item} from "../enchantmentTypes";
+import {EnchantmentData, EnchantmentDataVersion, EnchantmentVersions, Item} from "../enchantmentTypes";
 
 import {VersionSelection} from "./VersionSelection";
 import {ItemSelection} from "./ItemSelection";
 import {EnchantmentSelection, SelectedEnchantment} from "./EnchantmentSelection";
 import {CombinationResult, ComboItem, findOptimalCombination} from "../comboFinder";
 
-async function loadEnchantmentData(version: string): Promise<EnchantmentData> {
-    return await (await fetch(`https://techchrism.github.io/enchantment-json-exporter/versions/${version}.json`)).json()
+async function loadEnchantmentData(version: EnchantmentDataVersion): Promise<EnchantmentData> {
+    return await (await fetch(version.url)).json()
 }
 
 async function loadVersions(): Promise<EnchantmentVersions> {
@@ -44,7 +44,7 @@ function calculate(itemID: string, selectedEnchantments: SelectedEnchantment[], 
 }
 
 const App: Component = () => {
-    const [selectedVersion, setSelectedVersion] = createSignal<string>()
+    const [selectedVersion, setSelectedVersion] = createSignal<EnchantmentDataVersion>()
     const [selectedItem, setSelectedItem] = createSignal<Item>()
     const [selectedEnchantments, setSelectedEnchantments] = createSignal<SelectedEnchantment[]>([])
     const [comboResult, setComboResult] = createSignal<CombinationResult>()
