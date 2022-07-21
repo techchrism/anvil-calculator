@@ -5,6 +5,7 @@ import {EnchantmentData, EnchantmentVersions, Item} from "../enchantmentTypes";
 import {VersionSelection} from "./VersionSelection";
 import {ItemSelection} from "./ItemSelection";
 import {EnchantmentSelection, SelectedEnchantment} from "./EnchantmentSelection";
+import {CombinationResult, ComboItem, findOptimalCombination} from "../comboFinder";
 
 async function loadEnchantmentData(version: string): Promise<EnchantmentData> {
     return await (await fetch(`https://techchrism.github.io/enchantment-json-exporter/versions/${version}.json`)).json()
@@ -14,10 +15,39 @@ async function loadVersions(): Promise<EnchantmentVersions> {
     return await (await fetch('https://techchrism.github.io/enchantment-json-exporter/versions.json')).json()
 }
 
+function calculate(itemID: string, selectedEnchantments: SelectedEnchantment[], enchantmentData: EnchantmentData): CombinationResult {
+    const items: ComboItem[] = selectedEnchantments.map(selected => {
+        const enchantment = enchantmentData.enchantments.find(enchantment => enchantment.id === selected.id)
+        const rarity = enchantmentData.rarities.find(rarity => rarity.name === enchantment.rarity)
+
+        return {
+            book: true,
+            work: 0,
+            cost: 0,
+            totalCost: 0,
+            value: rarity.book_cost,
+            from: [],
+            id: enchantment.id
+        }
+    })
+    items.push({
+        book: false,
+        work: 0,
+        cost: 0,
+        totalCost: 0,
+        value: 0,
+        from: [],
+        id: itemID
+    })
+
+    return findOptimalCombination(items)
+}
+
 const App: Component = () => {
     const [selectedVersion, setSelectedVersion] = createSignal<string>()
     const [selectedItem, setSelectedItem] = createSignal<Item>()
     const [selectedEnchantments, setSelectedEnchantments] = createSignal<SelectedEnchantment[]>([])
+    const [comboResult, setComboResult] = createSignal<CombinationResult>()
 
     const [versionsData] = createResource(loadVersions)
     const [enchantmentData] = createResource(selectedVersion, loadEnchantmentData)
@@ -27,6 +57,11 @@ const App: Component = () => {
         return enchantmentData().enchantments.filter(enchantment => {
             return enchantmentData().categories.find(category => category.name === enchantment.category).items.some(item => item.id === selectedItem().id)
         })
+    }
+
+    const calculateSelected = () => {
+        setComboResult(calculate(selectedItem().id, selectedEnchantments(), enchantmentData()))
+        console.log(comboResult())
     }
 
     return (
@@ -51,6 +86,7 @@ const App: Component = () => {
                                     </>
                                 )
                             }}/>
+                            <button onclick={calculateSelected}>Calculate</button>
                         </Show>
                     </Show>
                 </Show>
