@@ -55,7 +55,8 @@ const App: Component = () => {
     const availableEnchantments = () => {
         if(selectedItem() === undefined || enchantmentData() === undefined) return []
         return enchantmentData().enchantments.filter(enchantment => {
-            return enchantmentData().categories.find(category => category.name === enchantment.category).items.some(item => item.id === selectedItem().id)
+            return enchantment.secondary_items.some(item => item.id === selectedItem().id) ||
+                enchantmentData().categories.find(category => category.name === enchantment.category).items.some(item => item.id === selectedItem().id)
         })
     }
 

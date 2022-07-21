@@ -39,7 +39,8 @@ export interface Enchantment {
     is_discoverable: boolean,
     is_tradeable: boolean,
     is_treasure_only: boolean,
-    incompatible: string[]
+    incompatible: string[],
+    secondary_items: Item[]
 }
 
 export interface EnchantmentData {
