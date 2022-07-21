@@ -1,9 +1,10 @@
 import type {Component} from 'solid-js';
-import {createResource, createSignal, Show} from "solid-js";
+import {createResource, createSignal, For, Show} from "solid-js";
 import {EnchantmentData, EnchantmentVersions, Item} from "../enchantmentTypes";
 
 import {VersionSelection} from "./VersionSelection";
 import {ItemSelection} from "./ItemSelection";
+import {EnchantmentSelection, SelectedEnchantment} from "./EnchantmentSelection";
 
 async function loadEnchantmentData(version: string): Promise<EnchantmentData> {
     return await (await fetch(`https://techchrism.github.io/enchantment-json-exporter/versions/${version}.json`)).json()
@@ -16,9 +17,17 @@ async function loadVersions(): Promise<EnchantmentVersions> {
 const App: Component = () => {
     const [selectedVersion, setSelectedVersion] = createSignal<string>()
     const [selectedItem, setSelectedItem] = createSignal<Item>()
+    const [selectedEnchantments, setSelectedEnchantments] = createSignal<SelectedEnchantment[]>([])
 
     const [versionsData] = createResource(loadVersions)
     const [enchantmentData] = createResource(selectedVersion, loadEnchantmentData)
+
+    const availableEnchantments = () => {
+        if(selectedItem() === undefined || enchantmentData() === undefined) return []
+        return enchantmentData().enchantments.filter(enchantment => {
+            return enchantmentData().categories.find(category => category.name === enchantment.category).items.some(item => item.id === selectedItem().id)
+        })
+    }
 
     return (
         <>
@@ -32,6 +41,17 @@ const App: Component = () => {
                         </p>
 
                         <ItemSelection enchantmentData={enchantmentData()} setSelectedItem={setSelectedItem}/>
+
+                        <Show when={availableEnchantments().length > 0}>
+                            <EnchantmentSelection availableEnchantments={availableEnchantments()} selectedEnchantments={selectedEnchantments()} setSelectedEnchantments={setSelectedEnchantments}/>
+                            <For each={selectedEnchantments()} children={(selected) => {
+                                return (
+                                    <>
+                                        <p>{selected.id} {selected.level}</p>
+                                    </>
+                                )
+                            }}/>
+                        </Show>
                     </Show>
                 </Show>
             </div>
