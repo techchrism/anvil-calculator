@@ -23,39 +23,28 @@ function combine(left: ComboItem, right: ComboItem): ComboItem {
         work: maxWork + maxWork + 1,
         cost,
         totalCost: left.totalCost + right.totalCost + cost,
-        //from: [left, right],
-        from: [],
+        from: [left, right],
         id: null
     }
 }
 
-function findBestOrder(items: ComboItem[], from: number, to: number): ComboItem {
+function findOrders(items: ComboItem[], from: number, to: number): ComboItem[] {
     if(to - from === 1) {
-        return items[from]
+        return [items[from]]
     } else {
-        let best = {
-            left: null,
-            right: null,
-            cost: -1
-        }
+        const ret = []
         for(let i = from + 1; i < to; i++) {
-            const leftBest = findBestOrder(items, from, i)
-            const rightBest = findBestOrder(items, i, to)
-            if(leftBest === null || rightBest === null) continue
-            if(!rightBest.book) continue
+            const leftOrders = findOrders(items, from, i)
+            const rightOrders = findOrders(items, i, to)
 
-            const cost = leftBest.work + rightBest.work + rightBest.value
-            if(best.cost === -1 || cost < best.cost) {
-                best.left = leftBest
-                best.right = rightBest
-                best.cost = cost
+            for (let rightI = 0; rightI < rightOrders.length; rightI++) {
+                if (!rightOrders[rightI].book) continue
+                for (let leftI = 0; leftI < leftOrders.length; leftI++) {
+                    ret.push(combine(leftOrders[leftI], rightOrders[rightI]))
+                }
             }
         }
-
-        if(best.cost > -1) {
-            return combine(best.left, best.right)
-        }
-        return null
+        return ret
     }
 }
 
@@ -87,7 +76,13 @@ export function findOptimalCombination(items: ComboItem[]): CombinationResult {
     const startedTime = Date.now()
     let smallest = null
     for(const perm of permute(items)) {
-        const smallestBatch = findBestOrder(perm, 0, perm.length)
+        const orders = findOrders(perm, 0, perm.length)
+        let smallestBatch: ComboItem = null
+        for(let orderI = 0; orderI < orders.length; orderI++) {
+            if(smallestBatch === null || orders[orderI].totalCost < smallestBatch.totalCost) {
+                smallestBatch = orders[orderI]
+            }
+        }
         if(smallestBatch === null) continue
         if(smallest === null || smallest.totalCost > smallestBatch.totalCost) {
             smallest = smallestBatch

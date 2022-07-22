@@ -25,7 +25,7 @@ function calculate(itemID: string, selectedEnchantments: SelectedEnchantment[], 
             work: 0,
             cost: 0,
             totalCost: 0,
-            value: rarity.book_cost,
+            value: rarity.book_cost * selected.level,
             from: [],
             id: enchantment.id
         }
