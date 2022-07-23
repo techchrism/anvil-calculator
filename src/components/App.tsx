@@ -1,11 +1,18 @@
 import type {Component} from 'solid-js';
 import {createResource, createSignal, For, Show} from "solid-js";
-import {EnchantmentData, EnchantmentDataVersion, EnchantmentVersions, Item} from "../enchantmentTypes";
+import {
+    CombinationResult,
+    ComboItem, ComboWorkerRequest, ComboWorkerResponseMessage,
+    EnchantmentData,
+    EnchantmentDataVersion,
+    EnchantmentVersions,
+    Item
+} from "../enchantmentTypes";
 
 import {VersionSelection} from "./VersionSelection";
 import {ItemSelection} from "./ItemSelection";
 import {EnchantmentSelection, SelectedEnchantment} from "./EnchantmentSelection";
-import {CombinationResult, ComboItem, findOptimalCombination} from "../comboFinder";
+import {calculate} from "../comboFinder";
 
 async function loadEnchantmentData(version: EnchantmentDataVersion): Promise<EnchantmentData> {
     return await (await fetch(version.url)).json()
@@ -13,34 +20,6 @@ async function loadEnchantmentData(version: EnchantmentDataVersion): Promise<Enc
 
 async function loadVersions(): Promise<EnchantmentVersions> {
     return await (await fetch('https://techchrism.github.io/enchantment-json-exporter/versions.json')).json()
-}
-
-function calculate(itemID: string, selectedEnchantments: SelectedEnchantment[], enchantmentData: EnchantmentData): CombinationResult {
-    const items: ComboItem[] = selectedEnchantments.map(selected => {
-        const enchantment = enchantmentData.enchantments.find(enchantment => enchantment.id === selected.id)
-        const rarity = enchantmentData.rarities.find(rarity => rarity.name === enchantment.rarity)
-
-        return {
-            book: true,
-            work: 0,
-            cost: 0,
-            totalCost: 0,
-            value: rarity.book_cost * selected.level,
-            from: [],
-            id: enchantment.id
-        }
-    })
-    items.push({
-        book: false,
-        work: 0,
-        cost: 0,
-        totalCost: 0,
-        value: 0,
-        from: [],
-        id: itemID
-    })
-
-    return findOptimalCombination(items)
 }
 
 const App: Component = () => {
@@ -60,10 +39,14 @@ const App: Component = () => {
         })
     }
 
-    const calculateSelected = () => {
-        setComboResult(calculate(selectedItem().id, selectedEnchantments(), enchantmentData()))
+    const calculateSelected = async () => {
+        setComboResult(await calculate(selectedItem().id, selectedEnchantments(), enchantmentData(), comboWorker, (progress: number) => {
+            console.log(`Progress is now ${progress}`)
+        }))
         console.log(comboResult())
     }
+
+    const comboWorker = new Worker(new URL('../worker/worker.ts', import.meta.url))
 
     return (
         <>

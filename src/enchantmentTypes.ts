@@ -52,3 +52,36 @@ export interface EnchantmentData {
     categories: EnchantmentCategory[],
     enchantments: Enchantment[]
 }
+
+export interface CombinationResult {
+    timeTakenMillis: number,
+    optimalCombination: ComboItem
+}
+
+export interface ComboItem {
+    // If this item is a book or not
+    book: boolean
+    value: number
+    work: number
+    cost: number
+    totalCost: number
+    from: ComboItem[]
+    id: string | null
+}
+
+export interface ComboWorkerRequest {
+    items: ComboItem[]
+}
+
+export interface ComboWorkerResponseMessage {
+    type: 'progress' | 'result'
+}
+
+export interface ComboWorkerProgressMessage extends ComboWorkerResponseMessage {
+    // Number from 0 to 100
+    progress: number
+}
+
+export interface ComboWorkerResultMessage extends ComboWorkerResponseMessage {
+    result: CombinationResult
+}
