@@ -12,6 +12,7 @@ import {VersionSelection} from "./VersionSelection";
 import {ItemSelection} from "./ItemSelection";
 import {EnchantmentSelection, SelectedEnchantment} from "./EnchantmentSelection";
 import {CalculateButton} from "./CalculateButton";
+import {CombinationDisplay} from "./CombinationDisplay";
 
 async function loadEnchantmentData(version: EnchantmentDataVersion): Promise<EnchantmentData> {
     return await (await fetch(version.url)).json()
@@ -25,7 +26,7 @@ const App: Component = () => {
     const [selectedVersion, setSelectedVersion] = createSignal<EnchantmentDataVersion>()
     const [selectedItem, setSelectedItem] = createSignal<Item>()
     const [selectedEnchantments, setSelectedEnchantments] = createSignal<SelectedEnchantment[]>([])
-    const [comboResult, setComboResult] = createSignal<CombinationResult>()
+    const [comboResult, setComboResult] = createSignal<CombinationResult>(null)
 
     const [versionsData] = createResource(loadVersions)
     const [enchantmentData] = createResource(selectedVersion, loadEnchantmentData)
@@ -64,6 +65,10 @@ const App: Component = () => {
                                              selectedEnchantments={selectedEnchantments()}
                                              enchantmentData={enchantmentData()}
                                              setResults={setComboResult}/>
+
+                            <Show when={comboResult() !== null}>
+                                <CombinationDisplay combo={comboResult()}/>
+                            </Show>
                         </Show>
                     </Show>
                 </Show>
