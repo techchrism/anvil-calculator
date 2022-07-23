@@ -64,11 +64,23 @@ function permute(permutation) {
     return result;
 }
 
-function findOptimalCombination(items: ComboItem[], progressCallback: Function = null): CombinationResult {
+function findOptimalCombination(items: ComboItem[], progressCallback: Function): CombinationResult {
     const startedTime = Date.now()
     let smallest = null
-    for(const perm of permute(items)) {
-        const orders = findOrders(perm, 0, perm.length)
+
+    const permutations = permute(items)
+
+    const progressCount = 100
+    const progressSize = permutations.length / progressCount
+    let targetProgress = progressSize
+
+    for(let i = 0; i < permutations.length; i++) {
+        if(i > targetProgress && progressCallback !== null) {
+            targetProgress += progressSize
+            progressCallback(i / permutations.length)
+        }
+
+        const orders = findOrders(permutations[i], 0, items.length)
         let smallestBatch: ComboItem = null
         for(let orderI = 0; orderI < orders.length; orderI++) {
             if(smallestBatch === null || orders[orderI].totalCost < smallestBatch.totalCost) {

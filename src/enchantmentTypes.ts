@@ -78,7 +78,7 @@ export interface ComboWorkerResponseMessage {
 }
 
 export interface ComboWorkerProgressMessage extends ComboWorkerResponseMessage {
-    // Number from 0 to 100
+    // Number from 0 to 1
     progress: number
 }
 
