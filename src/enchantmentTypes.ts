@@ -58,6 +58,11 @@ export interface CombinationResult {
     optimalCombination: ComboItem
 }
 
+export interface ComboBase {
+    id: string,
+    displayName: string
+}
+
 export interface ComboItem {
     // If this item is a book or not
     book: boolean
@@ -66,7 +71,7 @@ export interface ComboItem {
     cost: number
     totalCost: number
     from: ComboItem[]
-    id: string | null
+    base?: ComboBase
 }
 
 export interface ComboWorkerRequest {

@@ -1,10 +1,10 @@
 import {SelectedEnchantment} from "./EnchantmentSelection";
-import {CombinationResult, EnchantmentData} from "../enchantmentTypes";
+import {CombinationResult, EnchantmentData, Item} from "../enchantmentTypes";
 import {createEffect, createSignal, Setter, Show} from "solid-js";
 import {calculateEnchantments} from "../comboFinder";
 
 export interface ICalculateButtonProps {
-    itemID: string
+    item: Item
     selectedEnchantments: SelectedEnchantment[]
     enchantmentData: EnchantmentData
     setResults: Setter<CombinationResult>
@@ -37,7 +37,7 @@ export function CalculateButton(props: ICalculateButtonProps) {
 
         const abortController = new AbortController()
         const promise = calculateEnchantments(
-            props.itemID,
+            props.item,
             props.selectedEnchantments,
             props.enchantmentData,
             setProgress,

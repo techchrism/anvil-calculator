@@ -13,7 +13,7 @@ export interface SelectedEnchantment {
 }
 
 // From https://stackoverflow.com/a/9083076
-function romanize(num) {
+export function romanize(num) {
     if (isNaN(num))
         return NaN;
     const digits = String(+num).split(""),

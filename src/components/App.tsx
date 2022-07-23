@@ -61,7 +61,7 @@ const App: Component = () => {
                                     </>
                                 )
                             }}/>
-                            <CalculateButton itemID={selectedItem().id}
+                            <CalculateButton item={selectedItem()}
                                              selectedEnchantments={selectedEnchantments()}
                                              enchantmentData={enchantmentData()}
                                              setResults={setComboResult}/>

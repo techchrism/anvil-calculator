@@ -1,15 +1,17 @@
-import {SelectedEnchantment} from "./components/EnchantmentSelection";
+import {romanize, SelectedEnchantment} from "./components/EnchantmentSelection";
 import {
     CombinationResult,
-    ComboItem, ComboWorkerRequest,
+    ComboItem,
+    ComboWorkerRequest,
     ComboWorkerResponseMessage,
-    EnchantmentData
+    EnchantmentData,
+    Item
 } from "./enchantmentTypes";
 
 let comboJobID = 0
 let worker: Worker = null
 
-export async function calculateEnchantments(itemID: string,
+export async function calculateEnchantments(item: Item,
                          selectedEnchantments: SelectedEnchantment[],
                          enchantmentData: EnchantmentData,
                          progressCallback?: Function,
@@ -25,7 +27,10 @@ export async function calculateEnchantments(itemID: string,
             totalCost: 0,
             value: rarity.book_cost * selected.level,
             from: [],
-            id: enchantment.id
+            base: {
+                id: enchantment.id,
+                displayName: `${enchantment.name} ${romanize(selected.level)}`
+            }
         }
     })
     items.push({
@@ -35,7 +40,10 @@ export async function calculateEnchantments(itemID: string,
         totalCost: 0,
         value: 0,
         from: [],
-        id: itemID
+        base: {
+            id: item.id,
+            displayName: item.name
+        }
     })
 
     if(worker === null) {

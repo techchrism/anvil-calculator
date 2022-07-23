@@ -42,7 +42,7 @@ function combineRows(first: Row[], second: Row[], result: ComboItem): Row[] {
 
 function generateFrom(item: ComboItem): Row[] {
     if(item.from.length === 0) {
-        return [{name: item.id, comboColumns: []}]
+        return [{name: item.base.displayName, comboColumns: []}]
     } else {
         return combineRows(generateFrom(item.from[0]), generateFrom(item.from[1]), item)
     }
@@ -64,7 +64,7 @@ export function CombinationDisplay(props: ICombinationDisplayProps) {
                 <For each={tableData().table} children={(row) => {
                     return (
                         <tr class="border border-black">
-                            <td class="border border-r-0 border-black px-1" colspan={(tableData().columnCount - row.comboColumns.length) + 1}>
+                            <td class="border border-r-0 border-black px-3" colspan={(tableData().columnCount - row.comboColumns.length) + 1}>
                                 {row.name}
                             </td>
                             <For each={row.comboColumns.filter(col => col.depth !== 0)} children={(column) => {
