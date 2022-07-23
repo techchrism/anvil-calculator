@@ -70,11 +70,13 @@ export interface ComboItem {
 }
 
 export interface ComboWorkerRequest {
+    id: number
     items: ComboItem[]
 }
 
 export interface ComboWorkerResponseMessage {
     type: 'progress' | 'result'
+    id: number
 }
 
 export interface ComboWorkerProgressMessage extends ComboWorkerResponseMessage {

@@ -2,7 +2,6 @@ import type {Component} from 'solid-js';
 import {createResource, createSignal, For, Show} from "solid-js";
 import {
     CombinationResult,
-    ComboItem, ComboWorkerRequest, ComboWorkerResponseMessage,
     EnchantmentData,
     EnchantmentDataVersion,
     EnchantmentVersions,
@@ -12,7 +11,7 @@ import {
 import {VersionSelection} from "./VersionSelection";
 import {ItemSelection} from "./ItemSelection";
 import {EnchantmentSelection, SelectedEnchantment} from "./EnchantmentSelection";
-import {calculate} from "../comboFinder";
+import {CalculateButton} from "./CalculateButton";
 
 async function loadEnchantmentData(version: EnchantmentDataVersion): Promise<EnchantmentData> {
     return await (await fetch(version.url)).json()
@@ -39,15 +38,6 @@ const App: Component = () => {
         })
     }
 
-    const calculateSelected = async () => {
-        setComboResult(await calculate(selectedItem().id, selectedEnchantments(), enchantmentData(), comboWorker, (progress: number) => {
-            console.log(`Progress is now ${progress}`)
-        }))
-        console.log(comboResult())
-    }
-
-    const comboWorker = new Worker(new URL('../worker/worker.ts', import.meta.url))
-
     return (
         <>
             <div class="p-20">
@@ -70,7 +60,10 @@ const App: Component = () => {
                                     </>
                                 )
                             }}/>
-                            <button onclick={calculateSelected}>Calculate</button>
+                            <CalculateButton itemID={selectedItem().id}
+                                             selectedEnchantments={selectedEnchantments()}
+                                             enchantmentData={enchantmentData()}
+                                             setResults={setComboResult}/>
                         </Show>
                     </Show>
                 </Show>

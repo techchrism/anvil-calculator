@@ -64,7 +64,7 @@ function permute(permutation) {
     return result;
 }
 
-function findOptimalCombination(items: ComboItem[], progressCallback: Function): CombinationResult {
+function findOptimalCombination(items: ComboItem[], progressCallback?: Function): CombinationResult {
     const startedTime = Date.now()
     let smallest = null
 
@@ -101,14 +101,18 @@ function findOptimalCombination(items: ComboItem[], progressCallback: Function):
 
 onmessage = (e) => {
     const request = e.data as ComboWorkerRequest
-    const result = findOptimalCombination(request.items, (progress) => {
+
+    const result = findOptimalCombination(request.items, progress => {
         postMessage(<ComboWorkerProgressMessage> {
             type: 'progress',
+            id: request.id,
             progress
         })
     })
+
     postMessage(<ComboWorkerResultMessage> {
         type: 'result',
+        id: request.id,
         result
     })
 }
