@@ -7,6 +7,7 @@ import {
 } from "./enchantmentTypes";
 
 let comboJobID = 0
+let worker: Worker = null
 
 export async function calculateEnchantments(itemID: string,
                          selectedEnchantments: SelectedEnchantment[],
@@ -37,12 +38,14 @@ export async function calculateEnchantments(itemID: string,
         id: itemID
     })
 
-    const comboWorker = new Worker(new URL('./worker/worker.ts', import.meta.url))
+    if(worker === null) {
+        worker = new Worker(new URL('./worker/worker.ts', import.meta.url))
+    }
 
     return new Promise((resolve, reject) => {
         const id = comboJobID
         comboJobID++
-        comboWorker.postMessage(<ComboWorkerRequest> {
+        worker.postMessage(<ComboWorkerRequest> {
             id,
             items
         })
@@ -53,14 +56,15 @@ export async function calculateEnchantments(itemID: string,
                 progressCallback(e.data.progress)
             } else if(type === 'result') {
                 resolve(e.data.result)
-                comboWorker.removeEventListener('message', messageHandler)
+                worker.removeEventListener('message', messageHandler)
             }
         }
-        comboWorker.addEventListener('message', messageHandler)
+        worker.addEventListener('message', messageHandler)
 
         if(abortSignal !== undefined) {
             abortSignal.addEventListener('abort', () => {
-                comboWorker.terminate()
+                worker.terminate()
+                worker = null
                 reject(abortSignal.reason)
             })
         }
