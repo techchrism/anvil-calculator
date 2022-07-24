@@ -64,12 +64,12 @@ export function CombinationDisplay(props: ICombinationDisplayProps) {
                 <For each={tableData().table} children={(row) => {
                     return (
                         <tr class="border border-black">
-                            <td class="border border-r-0 border-black px-3" colspan={(tableData().columnCount - row.comboColumns.length) + 1}>
+                            <td class="border border-r-0 border-black px-2" colspan={(tableData().columnCount - row.comboColumns.length) + 1}>
                                 {row.name}
                             </td>
                             <For each={row.comboColumns.filter(col => col.depth !== 0)} children={(column) => {
                                 return (
-                                    <td class="border px-2 border-black font-semibold" style={{"background-color": column.meta.color}} rowspan={column.depth}>
+                                    <td class="border px-2 border-black font-semibold text-center" style={{"background-color": column.meta.color}} rowspan={column.depth}>
                                         {column.meta.text}
                                     </td>
                                 )

@@ -19,6 +19,10 @@ export async function calculateEnchantments(item: Item,
     const items: ComboItem[] = selectedEnchantments.map(selected => {
         const enchantment = enchantmentData.enchantments.find(enchantment => enchantment.id === selected.id)
         const rarity = enchantmentData.rarities.find(rarity => rarity.name === enchantment.rarity)
+        let displayName = enchantment.name
+        if(selected.level > 1) {
+            displayName += ` ${romanize(selected.level)}`
+        }
 
         return {
             book: true,
@@ -29,7 +33,7 @@ export async function calculateEnchantments(item: Item,
             from: [],
             base: {
                 id: enchantment.id,
-                displayName: `${enchantment.name} ${romanize(selected.level)}`
+                displayName
             }
         }
     })
