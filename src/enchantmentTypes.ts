@@ -55,6 +55,7 @@ export interface EnchantmentData {
 
 export interface CombinationResult {
     timeTakenMillis: number,
+    combinationsChecked: number,
     optimalCombination: ComboItem
 }
 

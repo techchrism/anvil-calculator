@@ -15,8 +15,7 @@ function combine(left: ComboItem, right: ComboItem): ComboItem {
         work: maxWork + maxWork + 1,
         cost,
         totalCost: left.totalCost + right.totalCost + cost,
-        from: [left, right],
-        id: null
+        from: [left, right]
     }
 }
 
@@ -41,7 +40,7 @@ function findOrders(items: ComboItem[], from: number, to: number): ComboItem[] {
 }
 
 // From https://stackoverflow.com/a/37580979
-function permute(permutation) {
+function permute(permutation: ComboItem[]) {
     let length = permutation.length,
         result = [permutation.slice()],
         c = new Array(length).fill(0),
@@ -55,13 +54,25 @@ function permute(permutation) {
             permutation[k] = p;
             ++c[i];
             i = 1;
-            result.push(permutation.slice());
+            // Ignore non-book at end
+            if(permutation[permutation.length - 1].book) {
+                result.push(permutation.slice());
+            }
         } else {
             c[i] = 0;
             ++i;
         }
     }
     return result;
+}
+
+function catalan(n: number): number {
+    if (n <= 1)
+        return 1
+    let val = 0
+    for(let i = 0; i < n; i++)
+        val += catalan(i) * catalan(n - i - 1)
+    return val
 }
 
 function findOptimalCombination(items: ComboItem[], progressCallback?: Function): CombinationResult {
@@ -95,7 +106,8 @@ function findOptimalCombination(items: ComboItem[], progressCallback?: Function)
     const endedTime = Date.now()
     return {
         timeTakenMillis: endedTime - startedTime,
-        optimalCombination: smallest
+        optimalCombination: smallest,
+        combinationsChecked: permutations.length * catalan(items.length)
     }
 }
 

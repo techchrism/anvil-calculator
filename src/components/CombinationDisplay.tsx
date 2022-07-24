@@ -77,6 +77,9 @@ export function CombinationDisplay(props: ICombinationDisplayProps) {
                         </tr>
                     )
                 }}/>
+                <caption style="caption-side: bottom;" class="font-light text-sm">
+                    Checked {props.combo.combinationsChecked.toLocaleString()} combinations in {props.combo.timeTakenMillis.toLocaleString()}ms
+                </caption>
             </table>
         </>
     )
