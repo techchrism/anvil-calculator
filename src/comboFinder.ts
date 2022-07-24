@@ -7,6 +7,7 @@ import {
     EnchantmentData,
     Item
 } from "./enchantmentTypes";
+import InlineWorker from './worker/worker.ts?worker&inline';
 
 let comboJobID = 0
 let worker: Worker = null
@@ -51,7 +52,7 @@ export async function calculateEnchantments(item: Item,
     })
 
     if(worker === null) {
-        worker = new Worker(new URL('./worker/worker.ts', import.meta.url))
+        worker = new InlineWorker()
     }
 
     return new Promise((resolve, reject) => {

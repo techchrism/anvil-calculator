@@ -1,3 +1,7 @@
+# [Anvil Calculator](https://techchrism.github.io/anvil-calculator/)
+
+Finds the lowest cost to combine Minecraft enchanted books in an anvil.
+
 ## Usage
 
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
