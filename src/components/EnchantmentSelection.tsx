@@ -67,7 +67,8 @@ export function EnchantmentSelection(props: IEnchantmentSelectionProps) {
     }
 
     return (
-        <>
+        <div>
+            <span class="font-semibold">Enchantment Selection</span>
             <table class="border-separate border-spacing-x-2">
                 <tbody>
                     <For each={enchantments()} children={(enchantment) => {
@@ -106,6 +107,6 @@ export function EnchantmentSelection(props: IEnchantmentSelectionProps) {
                     }}/>
                 </tbody>
             </table>
-        </>
+        </div>
     )
 }

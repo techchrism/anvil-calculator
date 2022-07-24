@@ -1,6 +1,6 @@
 import {SelectedEnchantment} from "./EnchantmentSelection";
 import {CombinationResult, EnchantmentData, Item} from "../enchantmentTypes";
-import {createEffect, createSignal, Setter, Show} from "solid-js";
+import {createEffect, createSignal, Setter} from "solid-js";
 import {calculateEnchantments} from "../comboFinder";
 
 export interface ICalculateButtonProps {
@@ -34,7 +34,6 @@ export function CalculateButton(props: ICalculateButtonProps) {
     }
 
     const calculate = () => {
-
         const abortController = new AbortController()
         const promise = calculateEnchantments(
             props.item,
@@ -55,6 +54,22 @@ export function CalculateButton(props: ICalculateButtonProps) {
         })
     }
 
+    const onButtonClick = () => {
+        if(buttonType() === 'calculate') {
+            calculate()
+        } else {
+            cancel()
+        }
+    }
+
+    const buttonContent = () => {
+        if(buttonType() === 'calculate') {
+            return 'Calculate'
+        } else {
+            return `Cancel (${Math.round(progress() * 100)}%)`
+        }
+    }
+
     createEffect(() => {
         (props.selectedEnchantments)
         props.setResults(null)
@@ -63,24 +78,10 @@ export function CalculateButton(props: ICalculateButtonProps) {
 
     return (
         <>
-            <Show when={buttonType() === 'calculate'} children={() => {
-                return (
-                    <>
-                        <button onclick={calculate}>
-                            Calculate
-                        </button>
-                    </>
-                )
-            }}
-            fallback={() => {
-                return (
-                    <>
-                        <button onclick={cancel}>
-                            Cancel ({Math.round(progress() * 100)}%)
-                        </button>
-                    </>
-                )
-            }}/>
+            {/* From https://tailwind-elements.com/docs/standard/components/buttons/ */}
+            <button onclick={onButtonClick} class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+                {buttonContent()}
+            </button>
         </>
     )
 }

@@ -41,25 +41,31 @@ const App: Component = () => {
 
     return (
         <>
-            <div class="p-20">
-                <Show when={!versionsData.loading}>
-                    <VersionSelection versions={versionsData()} setSelectedVersion={setSelectedVersion}/>
+            <div class="p-5 text-center text-lg">
+                <h1 class="font-bold mb-3">Anvil Calculator</h1>
 
-                    <Show when={enchantmentData() !== undefined} fallback={<>Loading...</>}>
-                        <ItemSelection enchantmentData={enchantmentData()} setSelectedItem={setSelectedItem}/>
-
-                        <Show when={availableEnchantments().length > 0}>
-                            <EnchantmentSelection availableEnchantments={availableEnchantments()} selectedEnchantments={selectedEnchantments()} setSelectedEnchantments={setSelectedEnchantments}/>
-                            <CalculateButton item={selectedItem()}
-                                             selectedEnchantments={selectedEnchantments()}
-                                             enchantmentData={enchantmentData()}
-                                             setResults={setComboResult}/>
-
-                            <Show when={comboResult() !== null}>
-                                <CombinationDisplay combo={comboResult()}/>
-                            </Show>
-                        </Show>
+                <div class="flex flex-row justify-center gap-6 mb-3">
+                    <Show when={!versionsData.loading} fallback={<p>Loading versions...</p>}>
+                        <VersionSelection versions={versionsData()} setSelectedVersion={setSelectedVersion}/>
                     </Show>
+                    <Show when={enchantmentData() !== undefined} fallback={<p>Loading enchantment data...</p>}>
+                        <ItemSelection enchantmentData={enchantmentData()} setSelectedItem={setSelectedItem}/>
+                    </Show>
+                </div>
+
+                <Show when={availableEnchantments().length > 0}>
+                    <div class="flex flex-col gap-6 items-center">
+                        <EnchantmentSelection availableEnchantments={availableEnchantments()} selectedEnchantments={selectedEnchantments()} setSelectedEnchantments={setSelectedEnchantments}/>
+
+                        <CalculateButton item={selectedItem()}
+                                         selectedEnchantments={selectedEnchantments()}
+                                         enchantmentData={enchantmentData()}
+                                         setResults={setComboResult}/>
+
+                        <Show when={comboResult() !== null}>
+                            <CombinationDisplay combo={comboResult()}/>
+                        </Show>
+                    </div>
                 </Show>
             </div>
         </>
