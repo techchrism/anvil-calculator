@@ -57,6 +57,7 @@ export function CalculateButton(props: ICalculateButtonProps) {
 
     createEffect(() => {
         (props.selectedEnchantments)
+        props.setResults(null)
         cancel()
     })
 

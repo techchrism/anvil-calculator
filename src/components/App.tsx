@@ -1,5 +1,5 @@
 import type {Component} from 'solid-js';
-import {createResource, createSignal, For, Show} from "solid-js";
+import {createResource, createSignal, Show} from "solid-js";
 import {
     CombinationResult,
     EnchantmentData,
@@ -46,21 +46,10 @@ const App: Component = () => {
                     <VersionSelection versions={versionsData()} setSelectedVersion={setSelectedVersion}/>
 
                     <Show when={enchantmentData() !== undefined} fallback={<>Loading...</>}>
-                        <p class="text-4xl text-green-700 text-center py-20">
-                            Enchantment data is version {enchantmentData().version} from {enchantmentData().exporter_version} with {enchantmentData().enchantments.length} enchantments
-                        </p>
-
                         <ItemSelection enchantmentData={enchantmentData()} setSelectedItem={setSelectedItem}/>
 
                         <Show when={availableEnchantments().length > 0}>
                             <EnchantmentSelection availableEnchantments={availableEnchantments()} selectedEnchantments={selectedEnchantments()} setSelectedEnchantments={setSelectedEnchantments}/>
-                            <For each={selectedEnchantments()} children={(selected) => {
-                                return (
-                                    <>
-                                        <p>{selected.id} {selected.level}</p>
-                                    </>
-                                )
-                            }}/>
                             <CalculateButton item={selectedItem()}
                                              selectedEnchantments={selectedEnchantments()}
                                              enchantmentData={enchantmentData()}
